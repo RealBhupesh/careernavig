@@ -15,6 +15,10 @@ export default function ResumePage() {
   const [analysis, setAnalysis] = useState<any>(null)
 
   const handleAnalyze = async () => {
+    if (!resumeText.trim()) {
+      return
+    }
+
     setIsAnalyzing(true)
 
     try {
@@ -24,10 +28,20 @@ export default function ResumePage() {
         body: JSON.stringify({ resumeText }),
       })
 
+      if (!response.ok) {
+        throw new Error(`Failed to analyze resume: ${response.statusText}`)
+      }
+
       const result = await response.json()
+
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
       setAnalysis(result)
     } catch (error) {
       console.error("Resume analysis failed:", error)
+      alert(`Resume analysis failed: ${error instanceof Error ? error.message : "Unknown error"}`)
     } finally {
       setIsAnalyzing(false)
     }

@@ -1,9 +1,12 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Brain, Target, BookOpen, Briefcase, FileText, MessageSquare, TrendingUp, Users, Award } from "lucide-react"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Dashboard() {
   const quickStats = [
@@ -30,6 +33,7 @@ export default function Dashboard() {
             <span className="text-xl font-bold text-gray-900">CareerAI</span>
           </div>
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <Badge variant="secondary">Free Plan</Badge>
             <div className="w-8 h-8 bg-gray-300 rounded-full"></div>
           </div>
