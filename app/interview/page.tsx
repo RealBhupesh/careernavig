@@ -49,7 +49,16 @@ export default function InterviewPage() {
         body: JSON.stringify({ role: selectedRole }),
       })
 
+      if (!response.ok) {
+        throw new Error(`Failed to start interview: ${response.statusText}`)
+      }
+
       const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
+
       setMessages([
         {
           type: "bot",
@@ -59,6 +68,8 @@ export default function InterviewPage() {
       ])
     } catch (error) {
       console.error("Failed to start interview:", error)
+      alert(`Failed to start interview: ${error instanceof Error ? error.message : "Unknown error"}`)
+      setInterviewStarted(false)
     } finally {
       setIsLoading(false)
     }
@@ -74,6 +85,7 @@ export default function InterviewPage() {
     }
 
     setMessages((prev) => [...prev, userMessage])
+    const savedAnswer = currentAnswer
     setCurrentAnswer("")
     setIsLoading(true)
 
@@ -83,13 +95,21 @@ export default function InterviewPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           role: selectedRole,
-          answer: currentAnswer,
+          answer: savedAnswer,
           questionNumber: currentQuestion + 1,
           conversationHistory: messages,
         }),
       })
 
+      if (!response.ok) {
+        throw new Error(`Failed to submit answer: ${response.statusText}`)
+      }
+
       const data = await response.json()
+
+      if (data.error) {
+        throw new Error(data.error)
+      }
 
       const botMessage = {
         type: "bot",
@@ -108,6 +128,7 @@ export default function InterviewPage() {
       }
     } catch (error) {
       console.error("Failed to submit answer:", error)
+      alert(`Failed to submit answer: ${error instanceof Error ? error.message : "Unknown error"}`)
     } finally {
       setIsLoading(false)
     }

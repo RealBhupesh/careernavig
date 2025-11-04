@@ -19,6 +19,10 @@ export default function ProfilePage() {
   const [analysis, setAnalysis] = useState<any>(null)
 
   const handleAnalyze = async () => {
+    if (!resumeText.trim()) {
+      return
+    }
+
     setIsAnalyzing(true)
 
     try {
@@ -28,10 +32,20 @@ export default function ProfilePage() {
         body: JSON.stringify({ resumeText, skills, interests }),
       })
 
+      if (!response.ok) {
+        throw new Error(`Failed to analyze profile: ${response.statusText}`)
+      }
+
       const result = await response.json()
+
+      if (result.error) {
+        throw new Error(result.error)
+      }
+
       setAnalysis(result)
     } catch (error) {
       console.error("Analysis failed:", error)
+      alert(`Analysis failed: ${error instanceof Error ? error.message : "Unknown error"}`)
     } finally {
       setIsAnalyzing(false)
     }
