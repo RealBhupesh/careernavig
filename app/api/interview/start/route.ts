@@ -1,5 +1,5 @@
 import { generateText } from "ai"
-import { openai } from "@ai-sdk/openai"
+import { groqFastModel } from "@/lib/groq"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
@@ -7,13 +7,14 @@ export async function POST(request: NextRequest) {
     const { role } = await request.json()
 
     const { text } = await generateText({
-      model: openai("gpt-4o"),
-      system: `You are an experienced technical interviewer conducting a mock interview for a ${role} position. Your goal is to help the candidate practice and improve their interview skills.
-
-Start the interview with a warm greeting and the first question. The first question should be a general "tell me about yourself" or similar opening question.
-
-Keep your tone professional but friendly. Make the candidate feel comfortable while maintaining the structure of a real interview.`,
-      prompt: `Start a mock interview for a ${role} position. Begin with an appropriate opening question.`,
+      model: groqFastModel,
+      system: `You are an expert tech recruiter and technical interviewer at top Indian tech firms (ranging from high-scale startups like Razorpay/Cred to product companies like Zoho, and service firms like TCS/Infosys). 
+      You are conducting an interactive mock interview for a ${role} position.
+      
+      Begin the session with an elegant, professional, warm greeting and the very first question. The first question should be tailored to their career aspiration, e.g. a general opening question like "Introduce yourself and explain what sparked your passion for ${role}."
+      
+      Keep the tone highly professional, precise, and supportive.`,
+      prompt: `Start a mock interview for a ${role} position. Begin with an appropriate, friendly opening question.`,
     })
 
     return NextResponse.json({ question: text })
